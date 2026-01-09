@@ -29,19 +29,21 @@ jobs:
 
       - name: run collection
         run: |
-            newman run In Warranty Flow latest.postman_collection.json \
+            newman run 'In Warranty Flow latest.postman_collection.json' \
             -e QA.postman_environment.json \
             -d testdata.csv \
             -r cli,htmlextra \
             --reporter-htmlextra-export ./newman/index.html
 
       - name: newman report
+        if: always()
         uses: actions/upload-artifact@v6.0.0
         with:
           name: newman report
           path: ./newman/*.html
       
       - name: Creating github page branch
+        if: always()
         uses: peaceiris/actions-gh-pages@v4.0.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN}}
