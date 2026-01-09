@@ -5,24 +5,55 @@ on:
     branches: [main]
   workflow_dispatch:
   schedule:
-    -cron: 30 02 * * *
-    -cron: 00 14 * * *
+    - cron: '30 02 * * *'
+    - cron: '00 14 * * *'
 
 jobs:  
-  run: Postman Collection job
-    runs on: ubuntu-latest
+  run-tests: 
+    runs-on: ubuntu-latest
 
-  steps:
+    steps:
 
-    name: checkout the code
-    uses: actions/checkout@v6.0.1
+      - name: checkout the code
+        uses: actions/checkout@v6.0.1
     
-    name: install node js 
-    uses: actions/setup-node@v6.1.0
-    with:
-      version: "22"
+      - name: install node js and npm 
+        uses: actions/setup-node@v6.1.0
+        with:
+          version: "22"
 
-    name: install npm and newman  
+      - name: install newman and htmlextra  
+        run: |
+             npm install -g newman
+             npm install -g newman-reporter-htmlextra
+
+      - name: run collection
+        run: |
+            newman run In Warranty Flow latest.postman_collection.json \
+            -e QA.postman_environment.json \
+            -d testdata.csv \
+            -r cli,htmlextra \
+            --reporter-htmlextra-export ./newman/index.html
+
+      - name: newman report
+        uses: actions/upload-artifact@v6.0.0
+        with:
+          name: newman report
+          path: ./newman/*.html
+      
+      - name: Creating github page branch
+        uses: peaceiris/actions-gh-pages@v4.0.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN}}
+          publish_dir: newman/
+      
+      
+    
+    
+      
+    
+         
+    
       
     
     
