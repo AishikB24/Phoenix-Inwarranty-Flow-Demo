@@ -1,0 +1,36 @@
+name: Phoenix Inwarranty Workflow
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    -cron: 30 02 * * *
+    -cron: 00 14 * * *
+
+jobs:  
+  run: Postman Collection job
+    runs on: ubuntu-latest
+
+  steps:
+
+    name: checkout the code
+    uses: actions/checkout@v6.0.1
+    
+    name: install node js 
+    uses: actions/setup-node@v6.1.0
+    with:
+      version: "22"
+
+    name: install npm and newman  
+      
+    
+    
+    
+    
+      
+
+
+  
+    
+    
